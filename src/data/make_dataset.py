@@ -52,19 +52,56 @@ for f in files:
         df["set"]=gyr_set
         gyr_set=gyr_set+1
         gyr_df=pd.concat([gyr_df,df])
-
-
-
     
 # --------------------------------------------------------------
 # Working with datetimes
 # --------------------------------------------------------------
+acc_df.info()
+df['epoch (ms)']
+pd.to_datetime(df['epoch (ms)'],unit='ms')
+pd.to_datetime(df['time (01:00)'])
+ 
+acc_df.index=pd.to_datetime(acc_df['epoch (ms)'],unit='ms')
+gyr_df.index=pd.to_datetime(gyr_df['epoch (ms)'],unit='ms')
+
+
+del acc_df["epoch (ms)"]
+del acc_df["time (01:00)"]
+del acc_df["elapsed (s)"]
+
+del gyr_df["epoch (ms)"]
+del gyr_df["time (01:00)"]
+del gyr_df["elapsed (s)"]
 
 
 # --------------------------------------------------------------
 # Turn into function
 # --------------------------------------------------------------
+files=glob("../../data/raw/MetaMotion/*.csv")
+def read_data_from_files(files):
+    acc_df=pd.DataFrame()
+gyr_df=pd.DataFrame()
 
+acc_set=1
+gyr_set=1
+
+for f in files:
+    participant = f.split("-")[0].replace(data_path, "").split("\\")[-1]
+    label = f.split("-")[1]
+    category = f.split("-")[2].split("_")[0].rstrip("123")
+    df=pd.read_csv(f)
+    df['participant']=participant
+    df['label']=label
+    df['category']=category
+    if "Accelerometer" in f:
+        df["set"]=acc_set
+        acc_set=acc_set+1
+        acc_df=pd.concat([acc_df,df])
+    else:
+        df["set"]=gyr_set
+        gyr_set=gyr_set+1
+        gyr_df=pd.concat([gyr_df,df])
+    
 
 # --------------------------------------------------------------
 # Merging datasets
