@@ -199,6 +199,21 @@ subset = df_cluster[cluster_columns]
 
 df_cluster["cluster"] = kmeans.fit_predict(subset)
 
+# Plot accelerometer data to compare
+fig = plt.figure(figsize=(15, 15))
+ax = fig.add_subplot(projection="3d")
+
+for l in df_cluster["label"].unique():
+    subset = df_cluster[df_cluster["label"] == l]
+
+    ax.scatter(subset["acc_x"], subset["acc_y"], subset["acc_z"], label=l)
+
+ax.set_xlabel("X-axis")
+ax.set_ylabel("Y-axis")
+ax.set_zlabel("Z-axis")
+
+plt.legend()
+plt.show()
 # --------------------------------------------------------------
 # Export dataset
 # --------------------------------------------------------------
